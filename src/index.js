@@ -33,8 +33,9 @@ function main() {
   console.log("Telegram userbot scheduler starting...");
   console.log(`Target groups: ${config.targetGroups.join(", ")}`);
 
-  scheduleJob("session-1", config.cronTime1, config.message1, config.timezone1);
-  scheduleJob("session-2", config.cronTime2, config.message2, config.timezone2);
+  for (const session of config.sessions) {
+    scheduleJob(session.name, session.cronTime, session.message, session.timezone);
+  }
 
   console.log("Scheduler running. Waiting for the next scheduled send...");
 }

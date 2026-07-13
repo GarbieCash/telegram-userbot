@@ -25,20 +25,40 @@ const config = {
     .map((s) => s.trim())
     .filter(Boolean),
 
-  // The two daily messages. MESSAGE_2 falls back to MESSAGE_1 if not set.
-  message1: process.env.MESSAGE_1 || "Good morning! \u{1F44B}",
-  message2: process.env.MESSAGE_2 || process.env.MESSAGE_1 || "Good evening! \u{1F44B}",
-
-  // Cron expressions. Defaults: 9:00 AM and 6:00 PM.
-  cronTime1: process.env.CRON_TIME_1 || "0 9 * * *",
-  cronTime2: process.env.CRON_TIME_2 || "0 18 * * *",
-
   // IANA timezone name, e.g. "America/New_York", "Europe/London", "Asia/Karachi".
-  // TIMEZONE_1 / TIMEZONE_2 let the two messages use different timezones;
-  // each falls back to TIMEZONE if not set.
+  // Global fallback used by any session that doesn't set its own TIMEZONE_n.
   timezone: process.env.TIMEZONE || "UTC",
-  timezone1: process.env.TIMEZONE_1 || process.env.TIMEZONE || "UTC",
-  timezone2: process.env.TIMEZONE_2 || process.env.TIMEZONE || "UTC",
 };
+
+// Sessions: any number of daily sends, each configured via MESSAGE_n /
+// CRON_TIME_n / TIMEZONE_n (n = 1, 2, 3, ...). Detection stops at the first
+// missing MESSAGE_n, so sessions must be numbered contiguously from 1.
+// Sessions 1 and 2 fall back to defaults (9 AM / 6 PM UTC) for backward
+// compatibility with older setups that predate this env var scheme.
+const defaultMessages = { 1: "Good morning! \u{1F44B}", 2: "Good evening! \u{1F44B}" };
+const defaultCronTimes = { 1: "0 9 * * *", 2: "0 18 * * *" };
+
+const sessions = [];
+for (let n = 1; ; n++) {
+  const message = process.env[`MESSAGE_${n}`] || defaultMessages[n];
+  if (!message) break;
+
+  sessions.push({
+    name: `session-${n}`,
+    message,
+    cronTime: process.env[`CRON_TIME_${n}`] || defaultCronTimes[n],
+    timezone: process.env[`TIMEZONE_${n}`] || config.timezone,
+  });
+}
+
+config.sessions = sessions;
+
+// Backward-compatible aliases (used by older scripts/tests).
+config.message1 = sessions[0]?.message;
+config.message2 = sessions[1]?.message;
+config.cronTime1 = sessions[0]?.cronTime;
+config.cronTime2 = sessions[1]?.cronTime;
+config.timezone1 = sessions[0]?.timezone;
+config.timezone2 = sessions[1]?.timezone;
 
 module.exports = config;
