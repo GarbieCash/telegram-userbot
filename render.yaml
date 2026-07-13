@@ -1,0 +1,29 @@
+services:
+  - type: worker
+    name: telegram-userbot
+    runtime: node
+    plan: free
+    rootDir: telegram-userbot
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: TELEGRAM_API_ID
+        sync: false
+      - key: TELEGRAM_API_HASH
+        sync: false
+      - key: TELEGRAM_SESSION
+        sync: false
+      - key: TELEGRAM_GROUP
+        sync: false
+      - key: MESSAGE_1
+        sync: false
+      - key: MESSAGE_2
+        sync: false
+      - key: CRON_TIME_1
+        value: "0 4 * * *"
+      - key: CRON_TIME_2
+        value: "0 15 * * *"
+      - key: TIMEZONE_1
+        value: Africa/Lagos
+      - key: TIMEZONE_2
+        value: Europe/London
