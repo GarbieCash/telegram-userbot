@@ -18,8 +18,12 @@ const config = {
   // Generated once via `npm run login`, then stored as a secret.
   sessionString: process.env.TELEGRAM_SESSION || "",
 
-  // Username (e.g. "mygroup"), invite link, or numeric chat ID of the group.
-  targetGroup: required("TELEGRAM_GROUP"),
+  // Comma-separated list of usernames, invite links, or numeric chat IDs.
+  // e.g. "mygroup,https://t.me/+abc123,-1001234567890"
+  targetGroups: required("TELEGRAM_GROUP")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
 
   // The two daily messages. MESSAGE_2 falls back to MESSAGE_1 if not set.
   message1: process.env.MESSAGE_1 || "Good morning! \u{1F44B}",

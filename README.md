@@ -20,7 +20,7 @@ cp .env.example .env
 Edit `.env`:
 
 - `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` -- from step 1.
-- `TELEGRAM_GROUP` -- the group's username (without `@`), invite link, or numeric chat ID.
+- `TELEGRAM_GROUP` -- one or more groups: username (without `@`), invite link, or numeric chat ID, separated by commas if more than one (e.g. `mygroup,https://t.me/+abc123`).
 - `MESSAGE_1` / `MESSAGE_2` -- the two messages to send each day.
 - `CRON_TIME_1` / `CRON_TIME_2` -- when to send them, as cron expressions (`minute hour * * *`). Defaults: 9:00 AM and 6:00 PM.
 - `TIMEZONE` -- an IANA timezone, e.g. `America/New_York`, `Europe/London`, `Asia/Karachi`.
