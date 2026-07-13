@@ -26,4 +26,4 @@ services:
       - key: TIMEZONE_1
         value: Africa/Lagos
       - key: TIMEZONE_2
-        value: Europe/London
+        value: Africa/Lagos
