@@ -31,7 +31,7 @@ function scheduleJob(name, cronExpression, text, timezone) {
 
 function main() {
   console.log("Telegram userbot scheduler starting...");
-  console.log(`Target group: ${config.targetGroup}`);
+  console.log(`Target groups: ${config.targetGroups.join(", ")}`);
 
   scheduleJob("session-1", config.cronTime1, config.message1, config.timezone1);
   scheduleJob("session-2", config.cronTime2, config.message2, config.timezone2);
