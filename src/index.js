@@ -8,8 +8,9 @@
 const cron = require("node-cron");
 const config = require("./config");
 const { sendMessage } = require("./sendMessage");
+const { bilingual, todaysMorningMessage } = require("./messages");
 
-function scheduleJob(name, cronExpression, text, timezone) {
+function scheduleJob(name, cronExpression, getText, timezone) {
   if (!cron.validate(cronExpression)) {
     throw new Error(`Invalid cron expression for ${name}: "${cronExpression}"`);
   }
@@ -18,7 +19,7 @@ function scheduleJob(name, cronExpression, text, timezone) {
     cronExpression,
     async () => {
       try {
-        await sendMessage(text);
+        await sendMessage(getText());
       } catch (err) {
         console.error(`[${name}] failed to send scheduled message:`, err);
       }
@@ -34,7 +35,11 @@ function main() {
   console.log(`Target groups: ${config.targetGroups.join(", ")}`);
 
   for (const session of config.sessions) {
-    scheduleJob(session.name, session.cronTime, session.message, session.timezone);
+    // Every message is sent bilingual (English + Indonesian). Fixed
+    // sessions translate their configured text; the rotating morning
+    // session picks a fresh worded variant each day it fires.
+    const getText = session.rotating ? () => todaysMorningMessage() : () => bilingual(session.message);
+    scheduleJob(session.name, session.cronTime, getText, session.timezone);
   }
 
   console.log("Scheduler running. Waiting for the next scheduled send...");

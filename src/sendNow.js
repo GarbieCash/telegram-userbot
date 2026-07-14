@@ -4,8 +4,9 @@
  */
 const config = require("./config");
 const { sendMessage } = require("./sendMessage");
+const { bilingual } = require("./messages");
 
-sendMessage(config.sessions[0].message)
+sendMessage(bilingual(config.sessions[0].message))
   .then(() => process.exit(0))
   .catch((err) => {
     console.error("Failed to send message:", err);

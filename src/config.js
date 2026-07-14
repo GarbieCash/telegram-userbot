@@ -51,6 +51,15 @@ for (let n = 1; ; n++) {
   });
 }
 
+// Special rotating "good morning" session -- doesn't read a MESSAGE env var;
+// its text comes from messages.js's daily-rotating variant pool instead.
+sessions.push({
+  name: "session-morning",
+  rotating: true,
+  cronTime: process.env.CRON_TIME_MORNING || "0 3 * * *",
+  timezone: process.env.TIMEZONE_MORNING || config.timezone,
+});
+
 config.sessions = sessions;
 
 // Backward-compatible aliases (used by older scripts/tests).

@@ -39,3 +39,7 @@ services:
         value: Africa/Lagos
       - key: TIMEZONE_4
         value: Africa/Lagos
+      - key: CRON_TIME_MORNING
+        value: "0 3 * * *"
+      - key: TIMEZONE_MORNING
+        value: Africa/Lagos
